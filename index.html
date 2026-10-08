@@ -1,0 +1,353 @@
+<style>
+  :root{
+    --ud-blue:#00539F;
+    --ud-border:#D7DDE3;
+    --ud-text:#2B2B2B;
+    --ud-white:#FFFFFF;
+  }
+
+  .ud-grad-phases{
+    font-family:"Open Sans", Arial, Helvetica, sans-serif;
+    color:var(--ud-text);
+    line-height:1.45;
+    max-width:100%;
+  }
+
+  .ud-grad-phases *{box-sizing:border-box;}
+
+  .ud-grad-phases .phase-tabs{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:8px;
+    margin-bottom:10px;
+  }
+
+  .ud-grad-phases .phase-btn{
+    appearance:none;
+    border:1px solid var(--ud-border);
+    background:#fff;
+    color:var(--ud-text);
+    padding:12px;
+    text-align:left;
+    cursor:pointer;
+    border-radius:3px;
+    min-height:68px;
+    font:inherit;
+  }
+
+  .ud-grad-phases .phase-btn:hover,
+  .ud-grad-phases .phase-btn:focus{
+    border-color:var(--ud-blue);
+    outline:none;
+  }
+
+  .ud-grad-phases .phase-btn[aria-selected="true"]{
+    background:var(--ud-blue);
+    color:#fff;
+    border-color:var(--ud-blue);
+  }
+
+  .ud-grad-phases .phase-label{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    opacity:.85;
+    margin-bottom:3px;
+  }
+
+  .ud-grad-phases .phase-name{
+    display:block;
+    font-size:14px;
+    font-weight:600;
+  }
+
+  .ud-grad-phases .phase-panel{
+    border:1px solid var(--ud-border);
+    border-radius:3px;
+    padding:14px;
+    background:#fff;
+  }
+
+  .ud-grad-phases .step-row{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+    margin-bottom:14px;
+  }
+
+  .ud-grad-phases .step-btn{
+    appearance:none;
+    border:1px solid var(--ud-border);
+    background:#fff;
+    color:var(--ud-text);
+    min-height:48px;
+    padding:9px 11px;
+    text-align:left;
+    cursor:pointer;
+    border-radius:3px;
+    font:inherit;
+    font-size:13px;
+  }
+
+  .ud-grad-phases .step-btn:hover,
+  .ud-grad-phases .step-btn:focus{
+    border-color:var(--ud-blue);
+    outline:none;
+  }
+
+  .ud-grad-phases .step-btn[aria-selected="true"]{
+    background:var(--ud-blue);
+    color:#fff;
+    border-color:var(--ud-blue);
+    font-weight:600;
+  }
+
+  .ud-grad-phases .detail{
+    border:1px solid var(--ud-border);
+    padding:15px 16px;
+    background:#fff;
+    min-height:105px;
+  }
+
+  .ud-grad-phases .detail p{
+    margin:0 0 10px;
+    font-size:14px;
+  }
+
+  .ud-grad-phases .detail p:last-child{
+    margin-bottom:0;
+  }
+
+  .ud-grad-phases .resource-link{
+    display:inline-block;
+    border:1px solid #7AAED6;
+    border-radius:4px;
+    padding:6px 10px;
+    color:var(--ud-blue);
+    background:#fff;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    margin:4px 0 8px;
+  }
+
+  .ud-grad-phases .resource-link:hover,
+  .ud-grad-phases .resource-link:focus{
+    text-decoration:underline;
+  }
+
+  @media (max-width:800px){
+    .ud-grad-phases .phase-tabs{grid-template-columns:1fr 1fr;}
+    .ud-grad-phases .step-row{grid-template-columns:1fr;}
+  }
+
+  @media (max-width:480px){
+    .ud-grad-phases .phase-tabs{grid-template-columns:1fr;}
+    .ud-grad-phases .phase-btn{min-height:auto;}
+    .ud-grad-phases .phase-panel{padding:10px;}
+  }
+</style>
+
+<div class="ud-grad-phases" id="udGradPhases">
+
+  <div class="phase-tabs" role="tablist" aria-label="Graduate application phases">
+    <button class="phase-btn" type="button" role="tab" aria-selected="true" data-phase="0">
+      <span class="phase-label">Phase 1</span>
+      <span class="phase-name">Explore &amp; Prepare</span>
+    </button>
+    <button class="phase-btn" type="button" role="tab" aria-selected="false" data-phase="1">
+      <span class="phase-label">Phase 2</span>
+      <span class="phase-name">Build Your Application</span>
+    </button>
+    <button class="phase-btn" type="button" role="tab" aria-selected="false" data-phase="2">
+      <span class="phase-label">Phase 3</span>
+      <span class="phase-name">Apply &amp; Follow Up</span>
+    </button>
+    <button class="phase-btn" type="button" role="tab" aria-selected="false" data-phase="3">
+      <span class="phase-label">Phase 4</span>
+      <span class="phase-name">Decision &amp; Enrollment</span>
+    </button>
+  </div>
+
+  <div class="phase-panel">
+    <div class="step-row" id="stepRow"></div>
+    <div class="detail" id="detailPanel" role="tabpanel" aria-live="polite">
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('udGradPhases');
+  if (!root || root.dataset.initialized) return;
+  root.dataset.initialized = 'true';
+
+  const phases = [
+    {
+      title: 'Explore & Prepare',
+      steps: [
+        {
+          title: 'Research Programs',
+          body: `Identify and research graduate programs that align with your academic and career goals. Consider the 7 C's described earlier in this module, and annotate them to compare opportunities.`,
+          resource: `the 7 C's as described earlier in this module`,
+          resourceUrl: `https://udel.instructure.com/courses/1645156/pages/graduate-and-professional-schools-2`
+        },
+        {
+          title: 'Define & Meet Requirements',
+          body: `Review the admission requirements for each program, including academic prerequisites, GPA standards, standardized test scores (GRE, GMAT, etc.), letters of recommendation, statement of purpose and any additional materials.`
+        },
+        {
+          title: 'Take Standardized Tests',
+          body: `If required, register for and take the necessary standardized tests. Prepare well in advance to achieve competitive scores. This is where programs vary the most; some no longer require testing while some value their specific test as the most crucial application component.`
+        }
+      ]
+    },
+    {
+      title: 'Build Your Application',
+      steps: [
+        {
+          title: 'Request Letters of Recommendation',
+          body: `Reach out to professors, employers or mentors who know you well and can write strong letters of recommendation. Provide them with sufficient time to complete the letters. For more guidance, read`,
+          resource: `How to ask for a letter of recommendation`,
+          resourceUrl: `https://www.coursera.org/articles/how-to-ask-for-a-letter-of-recommendation-template-tips?isNewUser=true`
+        },
+        {
+          title: 'Write Personal Statement',
+          body: `Craft a compelling personal statement that highlights your academic background, research interests, career goals and reasons for applying to the specific program. You'll want to tailor your statement to each school you apply to.`,
+          resource: `Princeton Review gives four essential tips`,
+          resourceUrl: `https://www.princetonreview.com/grad-school-advice/statement-of-purpose`,
+          secondBody: `Looking for feedback on your statement? Talk to a trusted professor or utilize the writing fellows in the`,
+          secondResource: `UD Writing Center`,
+          secondResourceUrl: `https://writingcenter.udel.edu/`
+        },
+        {
+          title: 'Gather Transcripts and Documents',
+          body: `Request official transcripts from all undergraduate institutions attended. Collect other required documents, such as CV/resume and writing samples, if needed.`
+        }
+      ]
+    },
+    {
+      title: 'Apply & Follow Up',
+      steps: [
+        {
+          title: 'Complete Application Forms',
+          body: `Fill out the online application forms for each program. Double-check for accuracy and completeness before submission.`
+        },
+        {
+          title: 'Pay Application Fees & Submit Applications',
+          body: `Pay the application fees for each program, or check if fee waivers are available based on financial need. Submit your applications before the stated deadline. Aim to apply early to increase your chances of admission and financial aid opportunities.`
+        },
+        {
+          title: 'Follow Up',
+          body: `Confirm that all required documents, including transcripts and test scores, have been received by the respective institutions. Follow up with the admissions office if any materials are missing.`
+        }
+      ]
+    },
+    {
+      title: 'Decision & Enrollment',
+      steps: [
+        {
+          title: 'Interview (if required)',
+          body: `Prepare for interviews if the program requires them. Practice answering common interview questions and be ready to discuss your qualifications and interests. Later in this course, you will find a module on`,
+          resource: `Communicate Your Experience Verbally`,
+          resourceUrl: `https://udel.instructure.com/courses/1645156/modules#module_4209832`
+        },
+        {
+          title: 'Wait for Decision, Compare Offers and Accept/Enroll',
+          body: `After completing all application steps, patiently wait for admission decisions from the schools. This period can take several weeks to months. If accepted into multiple programs, compare the offers—including funding, research opportunities and location—to make an informed decision.`,
+          secondBody: `Keep in mind that negotiating financial aid or funding is an option after you have been accepted into one or more graduate programs.`,
+          secondResource: `Profellow.com gives tips for successful negotiation`,
+          secondResourceUrl: `https://www.profellow.com/tips/how-to-negotiate-your-funding-offer-for-graduate-school-an-email-template/`,
+          thirdBody: `Once you've made your decision, accept the offer of admission from the chosen program and follow the enrollment instructions. For most programs, April 15 of each year (for fall admission) is the deadline to accept and place a deposit.`
+        }
+      ]
+    }
+  ];
+
+  const phaseButtons = Array.from(root.querySelectorAll('.phase-btn'));
+  const stepRow = root.querySelector('#stepRow');
+  const detailContent = root.querySelector('#detailContent');
+
+  let activePhase = 0;
+  let activeStep = 0;
+
+  function makeResource(label, url){
+    const a = document.createElement('a');
+    a.className = 'resource-link';
+    a.href = url;
+    a.textContent = label;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    return a;
+  }
+
+  function renderDetail(){
+    const step = phases[activePhase].steps[activeStep];
+    detailContent.innerHTML = '';
+
+    const p1 = document.createElement('p');
+    p1.textContent = step.body;
+    detailContent.appendChild(p1);
+
+    if (step.resource) detailContent.appendChild(makeResource(step.resource, step.resourceUrl));
+
+    if (step.secondBody){
+      const p2 = document.createElement('p');
+      p2.textContent = step.secondBody;
+      detailContent.appendChild(p2);
+    }
+
+    if (step.secondResource){
+      detailContent.appendChild(makeResource(step.secondResource, step.secondResourceUrl));
+    }
+
+    if (step.thirdBody){
+      const p3 = document.createElement('p');
+      p3.textContent = step.thirdBody;
+      detailContent.appendChild(p3);
+    }
+
+    Array.from(stepRow.querySelectorAll('.step-btn')).forEach((btn, i)=>{
+      btn.setAttribute('aria-selected', i === activeStep ? 'true' : 'false');
+    });
+  }
+
+  function renderPhase(){
+    const phase = phases[activePhase];
+
+    phaseButtons.forEach((btn, i)=>{
+      btn.setAttribute('aria-selected', i === activePhase ? 'true' : 'false');
+    });
+
+    stepRow.innerHTML = '';
+    phase.steps.forEach((step, i)=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'step-btn';
+      btn.textContent = step.title;
+      btn.setAttribute('aria-selected', i === activeStep ? 'true' : 'false');
+      btn.addEventListener('click', function(){
+        activeStep = i;
+        renderDetail();
+      });
+      stepRow.appendChild(btn);
+    });
+
+    renderDetail();
+  }
+
+  phaseButtons.forEach((btn, i)=>{
+    btn.addEventListener('click', function(){
+      activePhase = i;
+      activeStep = 0;
+      renderPhase();
+    });
+  });
+
+  renderPhase();
+})();
+</script>
